@@ -15,11 +15,15 @@ import nltk
 import pickle
 from pathlib import Path
 
+# Download NLTK data at startup
+nltk.download('stopwords')
+nltk.download('punkt')
+
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Assume NLTK resources are pre-installed
+# Assume NLTK resources are now available
 stop_words = set(stopwords.words('english')).union({"workbooks", "reports", "dashboards"})
 
 # Toggle for development vs full run
