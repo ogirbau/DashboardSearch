@@ -1,8 +1,8 @@
 flask==2.3.2
 flask-cors==3.0.10
-pandas==2.0.3
+pandas==2.2.2
 nltk==3.8.1
-scikit-learn==1.2.2
+scikit-learn==1.5.0
 requests==2.28.1
 openpyxl==3.0.10
 Jinja2==3.1.6
@@ -16,11 +16,11 @@ et-xmlfile==2.0.0
 idna==3.10
 itsdangerous==2.2.0
 joblib==1.5.0
-numpy==2.2.6
+numpy==1.26.4
 python-dateutil==2.9.0.post0
 pytz==2025.2
 regex==2024.11.6
-scipy==1.15.3
+scipy==1.13.1
 threadpoolctl==3.6.0
 tqdm==4.67.1
 tzdata==2025.2
