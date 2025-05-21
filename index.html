@@ -44,7 +44,8 @@
             resultsDiv.innerHTML = '';
             loadingDiv.style.display = 'block';
 
-            const url = `https://tableau-dashboard-search.onrender.com/search?query=${encodeURIComponent(query)}`;  // Updated to Render URL
+            const url = `https://tableau-dashboard-search.onrender.com/search?query=${encodeURIComponent(query)}`;  // Verify this matches your Render URL
+            console.log('Fetching from:', url);  // Debug log
             fetch(url, {
                 method: 'GET',
                 headers: {
@@ -53,13 +54,14 @@
             })
                 .then(response => {
                     if (!response.ok) {
+                        console.log('Response status:', response.status, response.statusText);  // Debug response status
                         throw new Error(`HTTP error! Status: ${response.status}, Status Text: ${response.statusText}`);
                     }
                     return response.json();
                 })
                 .then(data => {
                     loadingDiv.style.display = 'none';
-                    console.log('Search response:', data);
+                    console.log('Search response:', data);  // Debug data
                     if (data.error) {
                         resultsDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
                     } else if (!Array.isArray(data) || data.length === 0) {
@@ -69,7 +71,6 @@
                             if (bestMatch && bestMatch.webpage_url && bestMatch.webpage_url !== 'N/A') {
                                 const div = document.createElement('div');
                                 div.className = 'workbook';
-                                // Split path into folders/subfolders
                                 const folders = bestMatch.path ? bestMatch.path.split('/').filter(Boolean) : ['No Folder'];
                                 div.innerHTML = `
                                     <h3>${bestMatch.name || 'Unnamed Dashboard'}</h3>
@@ -86,7 +87,7 @@
                 })
                 .catch(error => {
                     loadingDiv.style.display = 'none';
-                    console.error('Fetch error details:', error);
+                    console.error('Fetch error details:', error);  // Detailed error logging
                     resultsDiv.innerHTML = `<p style="color: red;">Failed to fetch results: ${error.message}. Check console for details.</p>`;
                 });
         }
