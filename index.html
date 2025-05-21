@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau Dashboard Search</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 20px; }
+        input[type="text"] { padding: 8px; width: 250px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        #results { margin-top: 20px; }
+        .workbook { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 4px; background-color: #fafafa; }
+        .workbook h3 { margin-top: 0; font-family: Arial, sans-serif; color: #000; font-weight: bold; }
+        .workbook p { margin: 5px 0; font-family: Arial, sans-serif; color: #000; }
+        .workbook p a { color: #007bff; text-decoration: none; }
+        .workbook p a:hover { text-decoration: underline; }
+        #loading { display: none; color: #000; font-style: italic; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Tableau Dashboard Search</h2>
+        <div class="form-group">
+            <input type="text" id="query" placeholder="Enter search terms (e.g., 'loan delinquency')...">
+            <button onclick="searchWorkbooks()">Search</button>
+        </div>
+        <div id="loading">Loading dashboards...</div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function searchWorkbooks() {
+            const query = document.getElementById('query').value.trim();
+            if (!query) {
+                alert('Please enter one or more search terms.');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            const loadingDiv = document.getElementById('loading');
+            resultsDiv.innerHTML = '';
+            loadingDiv.style.display = 'block';
+
+            const url = `http://localhost:8080/search?query=${encodeURIComponent(query)}`;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}, Status Text: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    loadingDiv.style.display = 'none';
+                    console.log('Search response:', data);
+                    if (data.error) {
+                        resultsDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
+                    } else if (!Array.isArray(data) || data.length === 0) {
+                        resultsDiv.innerHTML = '<p>No matching dashboards found.</p>';
+                    } else {
+                        data.forEach(bestMatch => {
+                            if (bestMatch && bestMatch.webpage_url && bestMatch.webpage_url !== 'N/A') {
+                                const div = document.createElement('div');
+                                div.className = 'workbook';
+                                // Split path into folders/subfolders
+                                const folders = bestMatch.path ? bestMatch.path.split('/').filter(Boolean) : ['No Folder'];
+                                div.innerHTML = `
+                                    <h3>${bestMatch.name || 'Unnamed Dashboard'}</h3>
+                                    <p><strong>Dashboard URL:</strong> <a href="${bestMatch.webpage_url}" target="_blank">${bestMatch.webpage_url}</a></p>
+                                    <p><strong>Folders:</strong> ${folders.join(' > ')}</p>
+                                    <p><strong>Last Modified:</strong> ${bestMatch.last_modified}</p>
+                                    <p><strong>Owner:</strong> ${bestMatch.owner}</p>
+                                    <p><strong>Description:</strong> ${bestMatch.description}</p>
+                                `;
+                                resultsDiv.appendChild(div);
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    loadingDiv.style.display = 'none';
+                    console.error('Fetch error details:', error);
+                    resultsDiv.innerHTML = `<p style="color: red;">Failed to fetch results: ${error.message}. Check console for details.</p>`;
+                });
+        }
+
+        document.getElementById('query').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchWorkbooks();
+        });
+    </script>
+</body>
+</html>
