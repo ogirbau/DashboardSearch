@@ -204,8 +204,8 @@ if not sign_in_to_tableau():
     logger.error("Failed to initialize Tableau API authentication. Metadata fetching will not work.")
 
 # Flask app with template folder set to root directory
-app = Flask(__name__, template_folder='.')  # Updated to use root directory
-CORS(app)
+app = Flask(__name__, template_folder='.')
+CORS(app, origins=['https://ogirbau.github.io'])
 
 def expand_query(user_query):
     if user_query in expand_cache:
