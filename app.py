@@ -29,7 +29,7 @@ CACHE_DIR = Path("cache")
 CACHE_DIR.mkdir(exist_ok=True)
 
 # Paths
-info_xlsx_path = r"X:\Governance, Risk, Compliance\Reporting and Analysis\python scripts\Tableau Inventory Scrape\req_2814_2846\SJ 05.16.2025\info.xlsx"
+info_xlsx_path = "info.xlsx"  # Updated to relative path in the root directory
 cache_file = CACHE_DIR / "app_data.pkl"
 
 # Token configuration for Tableau REST API
@@ -199,8 +199,8 @@ def load_or_build_data():
 if not sign_in_to_tableau():
     logger.error("Failed to initialize Tableau API authentication. Metadata fetching will not work.")
 
-# Flask app with explicit template folder and CORS
-app = Flask(__name__, template_folder='templates')
+# Flask app with template folder set to root directory
+app = Flask(__name__, template_folder='.')  # Updated to use root directory
 CORS(app)
 
 def expand_query(user_query):
