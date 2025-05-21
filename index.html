@@ -44,7 +44,7 @@
             resultsDiv.innerHTML = '';
             loadingDiv.style.display = 'block';
 
-            const url = `http://localhost:8080/search?query=${encodeURIComponent(query)}`;
+            const url = `https://tableau-dashboard-search.onrender.com/search?query=${encodeURIComponent(query)}`;  // Updated to Render URL
             fetch(url, {
                 method: 'GET',
                 headers: {
