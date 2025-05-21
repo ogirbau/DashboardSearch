@@ -44,8 +44,8 @@
             resultsDiv.innerHTML = '';
             loadingDiv.style.display = 'block';
 
-            const url = `https://tableau-dashboard-search.onrender.com/search?query=${encodeURIComponent(query)}`;  // Verify this matches your Render URL
-            console.log('Fetching from:', url);  // Debug log
+            const url = `https://2d59-65-141-140-226.ngrok-free.app/search?query=${encodeURIComponent(query)}`;  // Use your actual ngrok URL
+            console.log('Fetching from:', url);
             fetch(url, {
                 method: 'GET',
                 headers: {
@@ -54,14 +54,14 @@
             })
                 .then(response => {
                     if (!response.ok) {
-                        console.log('Response status:', response.status, response.statusText);  // Debug response status
+                        console.log('Response status:', response.status, response.statusText);
                         throw new Error(`HTTP error! Status: ${response.status}, Status Text: ${response.statusText}`);
                     }
                     return response.json();
                 })
                 .then(data => {
                     loadingDiv.style.display = 'none';
-                    console.log('Search response:', data);  // Debug data
+                    console.log('Search response:', data);
                     if (data.error) {
                         resultsDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
                     } else if (!Array.isArray(data) || data.length === 0) {
@@ -87,7 +87,7 @@
                 })
                 .catch(error => {
                     loadingDiv.style.display = 'none';
-                    console.error('Fetch error details:', error);  // Detailed error logging
+                    console.error('Fetch error details:', error);
                     resultsDiv.innerHTML = `<p style="color: red;">Failed to fetch results: ${error.message}. Check console for details.</p>`;
                 });
         }
